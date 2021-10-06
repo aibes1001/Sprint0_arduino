@@ -115,8 +115,6 @@ public:
   void emitirAnuncioIBeacon( uint8_t * beaconUUID, int16_t major, int16_t minor, uint8_t rssi ) {
 
 	//
-	//
-	//
 	(*this).detenerAnuncio();
 	
 	//
@@ -288,7 +286,7 @@ public:
   // .........................................................
   template <typename ... T>
   bool anyadirServicioConSusCaracteristicas( ServicioEnEmisora & servicio,
-											 ServicioEnEmisora::Caracteristica & caracteristica,
+											 Caracteristica & caracteristica,
 											 T& ... restoCaracteristicas) {
 
 	servicio.anyadirCaracteristica( caracteristica );
@@ -337,4 +335,3 @@ public:
 // ----------------------------------------------------------
 // ----------------------------------------------------------
 // ----------------------------------------------------------
-

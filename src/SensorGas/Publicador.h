@@ -24,7 +24,7 @@ private:
   // ............................................................
 public:
   EmisoraBLE laEmisora {
-	  "GTI-3A", //  nombre emisora
+	  "GTI-3A-ABENEST", //  nombre emisora
 	  0x004c, // fabricanteID (Apple)
 	  4 // txPower
   };
@@ -63,29 +63,19 @@ public:
 
 	//
 	// 1. empezamos anuncio
- // operador << desplaça els bits de la variable CO2 8 posicions a l'esquerra per a deixar els 8 primers bits de 'major' (que es de 16 bits) per a 'contador' i enviar-se junt en una variable.
+ // operador << desplaça els bits de la variable CO2 8 posicions a l'esquerra per a indicar el tipus de mesura que s'envia (11 = CO2; 12 = TEMPERATURA)
 	//
-	uint16_t major = (MedicionesID::CO2 << 8) + contador;
+	uint16_t major = (MedicionesID::CO2 << 8);
 	(*this).laEmisora.emitirAnuncioIBeacon( (*this).beaconUUID, 
 											major,
 											valorCO2, // minor
 											(*this).RSSI // rssi
 									);
 
-	/*
-	Globales::elPuerto.escribir( "   publicarCO2(): valor=" );
-	Globales::elPuerto.escribir( valorCO2 );
-	Globales::elPuerto.escribir( "   contador=" );
-	Globales::elPuerto.escribir( contador );
-	Globales::elPuerto.escribir( "   todo="  );
-	Globales::elPuerto.escribir( major );
-	Globales::elPuerto.escribir( "\n" );
-	*/
-
 	//
 	// 2. esperamos el tiempo que nos digan
 	//
-	esperar( tiempoEspera );
+	delay( tiempoEspera );
 
 	//
 	// 3. paramos anuncio
@@ -98,13 +88,14 @@ public:
   void publicarTemperatura( int16_t valorTemperatura,
 							uint8_t contador, long tiempoEspera ) {
 
-	uint16_t major = (MedicionesID::TEMPERATURA << 8) + contador;
+ // operador << desplaça els bits de la variable CO2 8 posicions a l'esquerra per a indicar el tipus de mesura que s'envia (12 = TEMPERATURA)
+	uint16_t major = (MedicionesID::TEMPERATURA << 8);
 	(*this).laEmisora.emitirAnuncioIBeacon( (*this).beaconUUID, 
 											major,
 											valorTemperatura, // minor
 											(*this).RSSI // rssi
 									);
-	esperar( tiempoEspera );
+	delay( tiempoEspera );
 
 	(*this).laEmisora.detenerAnuncio();
   } // ()
