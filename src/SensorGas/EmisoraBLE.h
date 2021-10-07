@@ -140,12 +140,16 @@ public:
 	// ? qué valorers poner aquí
 	//
 	Bluefruit.Advertising.restartOnDisconnect(true); // no hace falta, pero lo pongo
-	Bluefruit.Advertising.setInterval(100, 100);    // in unit of 0.625 ms
+  //#define BLE_ADV_INTERVAL_FAST_DFLT       32  // 20    ms (in 0.625 ms unit)
+  //#define BLE_ADV_INTERVAL_SLOW_DFLT       244 // 152.5 ms (in 0.625 ms unit)
+  //#define BLE_ADV_FAST_TIMEOUT_DFLT        30  // in seconds
+	Bluefruit.Advertising.setInterval(32, 244);    // in unit of 0.625 ms
+  Bluefruit.Advertising.setFastTimeout(30);
 
 	//
 	// empieza el anuncio, 0 = tiempo indefinido (ya lo pararán)
 	//
-	Bluefruit.Advertising.start( 0 ); 
+	Bluefruit.Advertising.start(); 
 	
   } // ()
 
@@ -193,11 +197,8 @@ public:
   // .........................................................
   // Para enviar como carga libre los últimos 21 bytes de un iBeacon (lo que normalmente sería uuid-16 major-2 minor-2 txPower-1)
   // .........................................................
-  /*
-  void emitirAnuncioIBeaconLibre( const char * carga ) {
 
-	const uint8_t tamanyoCarga = strlen( carga );
-  */
+
   void emitirAnuncioIBeaconLibre( const char * carga, const uint8_t tamanyoCarga ) {
 
 	(*this).detenerAnuncio(); 

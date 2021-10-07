@@ -24,6 +24,7 @@ uint8_t * stringAUint8AlReves( const char * pString, uint8_t * pUint, int tamMax
 } // ()
 
 
+
 class Caracteristica {
   private:
   uint8_t uuidCaracteristica[16] = { // el uuid se copia aquí (al revés) a partir de un string-c

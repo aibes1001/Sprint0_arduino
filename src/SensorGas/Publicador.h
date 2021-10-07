@@ -61,26 +61,26 @@ public:
   void publicarCO2( int16_t valorCO2, uint8_t contador,
 					long tiempoEspera ) {
 
-	//
-	// 1. empezamos anuncio
- // operador << desplaça els bits de la variable CO2 8 posicions a l'esquerra per a indicar el tipus de mesura que s'envia (11 = CO2; 12 = TEMPERATURA)
-	//
-	uint16_t major = (MedicionesID::CO2 << 8);
-	(*this).laEmisora.emitirAnuncioIBeacon( (*this).beaconUUID, 
-											major,
-											valorCO2, // minor
-											(*this).RSSI // rssi
-									);
-
-	//
-	// 2. esperamos el tiempo que nos digan
-	//
-	delay( tiempoEspera );
-
-	//
-	// 3. paramos anuncio
-	//
-	(*this).laEmisora.detenerAnuncio();
+    	//
+    	// 1. empezamos anuncio
+      // operador << desplaza los bits de la variable CO2 8 posiciones a la izquierda para indicar el tipo de medida que se envía (11 = CO2)
+    	//
+    	uint16_t major = (MedicionesID::CO2 << 8);
+    	(*this).laEmisora.emitirAnuncioIBeacon( (*this).beaconUUID, 
+    											major,
+    											valorCO2, // minor
+    											(*this).RSSI // rssi
+    									);
+    
+    	//
+    	// 2. esperamos el tiempo que nos digan
+    	//
+    	delay( tiempoEspera );
+    
+    	//
+    	// 3. paramos anuncio
+    	//
+    	(*this).laEmisora.detenerAnuncio();
   } // ()
 
   // ............................................................
@@ -88,16 +88,27 @@ public:
   void publicarTemperatura( int16_t valorTemperatura,
 							uint8_t contador, long tiempoEspera ) {
 
- // operador << desplaça els bits de la variable CO2 8 posicions a l'esquerra per a indicar el tipus de mesura que s'envia (12 = TEMPERATURA)
-	uint16_t major = (MedicionesID::TEMPERATURA << 8);
-	(*this).laEmisora.emitirAnuncioIBeacon( (*this).beaconUUID, 
-											major,
-											valorTemperatura, // minor
-											(*this).RSSI // rssi
-									);
-	delay( tiempoEspera );
+      //
+      // 1. empezamos anuncio 
+      // operador << desplaza los bits de la variable TEMPERATURA 8 posiciones a la izquierda para indicar el tipo de medida que se envía (12 = TEMPERATURA)
+    	uint16_t major = (MedicionesID::TEMPERATURA << 8);
+      
+    	(*this).laEmisora.emitirAnuncioIBeacon( (*this).beaconUUID, 
+    											major,
+    											valorTemperatura, // minor
+    											(*this).RSSI // rssi
+    									);
 
-	(*this).laEmisora.detenerAnuncio();
+                      
+      //
+      // 2. esperamos el tiempo que nos digan
+      //           
+    	delay( tiempoEspera );
+
+      //
+      // 3. paramos anuncio
+      //
+    	(*this).laEmisora.detenerAnuncio();
   } // ()
 	
 }; // class

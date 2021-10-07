@@ -68,7 +68,10 @@ void inicializarPlaquita () {
 // --------------------------------------------------------------
 void setup() {
 
-  Globales::elPuerto.esperarDisponible();
+  // Método para que mientras no se habra el puerto serie no se acaba de completar el setup
+  // ni se inicia el envío de beacons.
+  // No es útil en el proyecto, no dispondremos de la información en el puerto serie!!
+  //Globales::elPuerto.esperarDisponible();
 
   // 
   // 
@@ -125,16 +128,16 @@ void loop () {
   // mido y publico
   // 
   int valorCO2 = elMedidor.medirCO2();
+  int intervaloEmision = 1000;
 
   elPuerto.escribir( "\n---- Envio C02: empieza \n" );
   elPublicador.publicarCO2( valorCO2,
               cont,
-              1000 // intervalo de emisión
+              intervaloEmision // intervalo de emisión
               );
 
   elPuerto.escribir( "\n---- Envio C02: TERMINA \n" );
 
-  delay( 30000 );
   // 
   // mido y publico
   // 
@@ -143,14 +146,12 @@ void loop () {
   elPuerto.escribir( "\n---- Envio Temperatura: empieza \n" );
   elPublicador.publicarTemperatura( valorTemperatura, 
                   cont,
-                  1000 // intervalo de emisión
+                  intervaloEmision // intervalo de emisión
                   );
-
-//elPublicador.laEmisora.detenerAnuncio();
 elPuerto.escribir( "\n---- Envio Temperatura: TERMINA \n" );
   
-  /*
-  // 
+  
+  /*// 
   // prueba para emitir un iBeacon y poner
   // en la carga (21 bytes = uuid 16 major 2 minor 2 txPower 1 )
   // lo que queramos (sin seguir dicho formato)
@@ -172,7 +173,8 @@ elPuerto.escribir( "\n---- Envio Temperatura: TERMINA \n" );
   elPuerto.escribir( "---- loop(): acaba **** " );
   elPuerto.escribir( cont );
   elPuerto.escribir( "\n" );
-  delay( 30000 );
+  elPublicador.laEmisora.detenerAnuncio();
+  delay( 10000 );
   // 
   // 
   // 
