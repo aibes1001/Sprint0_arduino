@@ -17,6 +17,9 @@
 // --------------------------------------------------------------
 
 #include <bluefruit.h>
+#include <Arduino.h>
+#include <Adafruit_TinyUSB.h> // for Serial
+
 
 #undef min // vaya tela, están definidos en bluefruit.h y  !
 #undef max // colisionan con los de la biblioteca estándar
@@ -29,7 +32,7 @@
 // --------------------------------------------------------------
 namespace Globales {
 
-  PuertoSerie elPuerto ( /* velocidad = */ 115200 ); // 115200 o 9600 o ...
+  PuertoSerie elPuerto ( /* velocidad = */ 9600 ); // 115200 o 9600 o ...
 
   // Serial1 en el ejemplo de Curro creo que es la conexión placa-sensor 
 };
@@ -47,7 +50,7 @@ namespace Globales {
 
   Publicador elPublicador;
 
-  Medidor elMedidor;
+  Medidor elMedidor(&Serial1);
 
 }; // namespace
 
@@ -59,7 +62,7 @@ namespace Globales {
 // --------------------------------------------------------------
 void inicializarPlaquita () {
 
-  // de momento nada
+  Serial1.begin(9600);
 
 } // ()
 
@@ -87,11 +90,6 @@ void setup() {
   Globales::elPublicador.encenderEmisora();
 
   // Globales::elPublicador.laEmisora.pruebaEmision();
-  
-  // 
-  // 
-  // 
-  Globales::elMedidor.iniciarMedidor();
 
   // 
   // 
@@ -120,6 +118,11 @@ void loop () {
 
   cont++;
 
+  // 
+  // 
+  // 
+  elMedidor.iniciarMedicion('\r');
+
   elPuerto.escribir( "\n---- loop(): empieza " );
   elPuerto.escribir( cont );
   elPuerto.escribir( "\n" );
@@ -127,11 +130,12 @@ void loop () {
   // 
   // mido y publico
   // 
-  int valorCO2 = elMedidor.medirCO2();
+  int valorConcentracion = elMedidor.getConcentracionGas();
   int intervaloEmision = 1000;
 
   elPuerto.escribir( "\n---- Envio C02: empieza \n" );
-  elPublicador.publicarCO2( valorCO2,
+  elPuerto.escribir( valorConcentracion );
+  elPublicador.publicarConcentracion( valorConcentracion,
               cont,
               intervaloEmision // intervalo de emisión
               );
@@ -141,34 +145,25 @@ void loop () {
   // 
   // mido y publico
   // 
-  int valorTemperatura = elMedidor.medirTemperatura();
+  int valorTemperatura = elMedidor.getTemperatura();
 
   elPuerto.escribir( "\n---- Envio Temperatura: empieza \n" );
+  elPuerto.escribir( valorTemperatura );
   elPublicador.publicarTemperatura( valorTemperatura, 
                   cont,
                   intervaloEmision // intervalo de emisión
                   );
-elPuerto.escribir( "\n---- Envio Temperatura: TERMINA \n" );
+  elPuerto.escribir( "\n---- Envio Temperatura: TERMINA \n" );
   
-  
-  /*// 
-  // prueba para emitir un iBeacon y poner
-  // en la carga (21 bytes = uuid 16 major 2 minor 2 txPower 1 )
-  // lo que queramos (sin seguir dicho formato)
-  // 
-  // Al terminar la prueba hay que hacer Publicador::laEmisora privado
-  // 
-  char datos[21] = {
-  'H', 'o', 'l', 'a',
-  'H', 'o', 'l', 'a',
-  'H', 'o', 'l', 'a',
-  'H', 'o', 'l', 'a',
-  'H', 'o', 'l', 'a',
-  'H'
-  };
+  int valorRH = elMedidor.getRH();
 
-  // elPublicador.laEmisora.emitirAnuncioIBeaconLibre ( &datos[0], 21 );
-  elPublicador.laEmisora.emitirAnuncioIBeaconLibre ( "MolaMolaMolaMolaMolaM", 21 );*/
+  elPuerto.escribir( "\n---- Envio Humedad Relativa: empieza \n" );
+  elPuerto.escribir( valorRH );
+  elPublicador.publicarRH( valorRH, 
+                  cont,
+                  intervaloEmision // intervalo de emisión
+                  );
+  elPuerto.escribir( "\n---- Envio Humedad Relativa: TERMINA \n" );
 
   elPuerto.escribir( "---- loop(): acaba **** " );
   elPuerto.escribir( cont );
@@ -178,7 +173,6 @@ elPuerto.escribir( "\n---- Envio Temperatura: TERMINA \n" );
   // 
   // 
   // 
-  
   
 } // loop ()
 // --------------------------------------------------------------

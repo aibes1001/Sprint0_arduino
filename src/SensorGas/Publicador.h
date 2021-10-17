@@ -38,9 +38,9 @@ public:
   // ............................................................
   // ............................................................
   enum MedicionesID  {
-	CO2 = 11,
+	CONCENTRACION = 11,
 	TEMPERATURA = 12,
-	RUIDO = 13
+	HUMEDAD = 13
   };
 
   // ............................................................
@@ -58,17 +58,17 @@ public:
 
   // ............................................................
   // ............................................................
-  void publicarCO2( int16_t valorCO2, uint8_t contador,
+  void publicarConcentracion( int16_t valorConcentracion, uint8_t contador,
 					long tiempoEspera ) {
 
     	//
     	// 1. empezamos anuncio
       // operador << desplaza los bits de la variable CO2 8 posiciones a la izquierda para indicar el tipo de medida que se envía (11 = CO2)
     	//
-    	uint16_t major = (MedicionesID::CO2 << 8);
+    	uint16_t major = (MedicionesID::CONCENTRACION << 8);
     	(*this).laEmisora.emitirAnuncioIBeacon( (*this).beaconUUID, 
     											major,
-    											valorCO2, // minor
+    											valorConcentracion, // minor
     											(*this).RSSI // rssi
     									);
     
@@ -109,6 +109,33 @@ public:
       // 3. paramos anuncio
       //
     	(*this).laEmisora.detenerAnuncio();
+  } // ()
+
+  // ............................................................
+  // ............................................................
+  void publicarRH( int16_t valorRH, uint8_t contador,
+          long tiempoEspera ) {
+
+      //
+      // 1. empezamos anuncio
+      // operador << desplaza los bits de la variable CO2 8 posiciones a la izquierda para indicar el tipo de medida que se envía (11 = CO2)
+      //
+      uint16_t major = (MedicionesID::HUMEDAD << 8);
+      (*this).laEmisora.emitirAnuncioIBeacon( (*this).beaconUUID, 
+                          major,
+                          valorRH, // minor
+                          (*this).RSSI // rssi
+                      );
+    
+      //
+      // 2. esperamos el tiempo que nos digan
+      //
+      delay( tiempoEspera );
+    
+      //
+      // 3. paramos anuncio
+      //
+      (*this).laEmisora.detenerAnuncio();
   } // ()
 	
 }; // class
