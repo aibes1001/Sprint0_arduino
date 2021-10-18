@@ -1,12 +1,13 @@
 // -*-c++-*-
 
 // --------------------------------------------------------------
-//
+// SensorGas.ino
 // Aitor Benítez Estruch
 // 2021/10/05
 //
 // Descripción:
-// Adapación del código original a las necesidades reales de este proyecto.
+// Ejecución del programa para medir y obtener las magnitudes del sensor,
+// y enviar vía bluetooth las mediciones obtenidas.
 //
 // --------------------------------------------------------------
 
@@ -32,9 +33,9 @@
 // --------------------------------------------------------------
 namespace Globales {
 
-  PuertoSerie elPuerto ( /* velocidad = */ 9600 ); // 115200 o 9600 o ...
+  //Inicializamos el puerto serie 0 (UART0)
+  PuertoSerie elPuerto ( 9600 );
 
-  // Serial1 en el ejemplo de Curro creo que es la conexión placa-sensor 
 };
 
 // --------------------------------------------------------------
@@ -56,11 +57,12 @@ namespace Globales {
 
 
 
-
-
 // --------------------------------------------------------------
+// La función inicializarComunicacionSensor() se utiliza para iniciar el puerto Serie 1 (UART entre la placa y sensor)
+//
+// inicializarComunicacionSensor () ->
 // --------------------------------------------------------------
-void inicializarPlaquita () {
+void inicializarComunicacionSensor () {
 
   Serial1.begin(9600);
 
@@ -71,29 +73,17 @@ void inicializarPlaquita () {
 // --------------------------------------------------------------
 void setup() {
 
-  // Método para que mientras no se habra el puerto serie no se acaba de completar el setup
-  // ni se inicia el envío de beacons.
-  // No es útil en el proyecto, no dispondremos de la información en el puerto serie!!
-  //Globales::elPuerto.esperarDisponible();
+  // 
+  // Iniciamos el Serial1 para establecer la comunicación UART con el sensor
+  // 
+  inicializarComunicacionSensor();
+
 
   // 
-  // 
-  // 
-  inicializarPlaquita();
-
-  // Suspend Loop() to save power
-  // suspendLoop();
-
-  // 
-  // 
+  // Inicializamos la emisora BLE de Bluefruit...
   // 
   Globales::elPublicador.encenderEmisora();
 
-  // Globales::elPublicador.laEmisora.pruebaEmision();
-
-  // 
-  // 
-  // 
   delay( 1000 );
 
   Globales::elPuerto.escribir( "---- setup(): fin ---- \n " );
@@ -119,7 +109,7 @@ void loop () {
   cont++;
 
   // 
-  // 
+  // Mido del sensor 
   // 
   elMedidor.iniciarMedicion('\r');
 
@@ -128,7 +118,7 @@ void loop () {
   elPuerto.escribir( "\n" );
 
   // 
-  // mido y publico
+  // Obtengo la concentración de gas y publico
   // 
   int valorConcentracion = elMedidor.getConcentracionGas();
   int intervaloEmision = 1000;
@@ -136,31 +126,32 @@ void loop () {
   elPuerto.escribir( "\n---- Envio C02: empieza \n" );
   elPuerto.escribir( valorConcentracion );
   elPublicador.publicarConcentracion( valorConcentracion,
-              cont,
               intervaloEmision // intervalo de emisión
               );
 
   elPuerto.escribir( "\n---- Envio C02: TERMINA \n" );
 
   // 
-  // mido y publico
+  // Obtengo la temperatura y publico
   // 
   int valorTemperatura = elMedidor.getTemperatura();
 
   elPuerto.escribir( "\n---- Envio Temperatura: empieza \n" );
   elPuerto.escribir( valorTemperatura );
   elPublicador.publicarTemperatura( valorTemperatura, 
-                  cont,
                   intervaloEmision // intervalo de emisión
                   );
   elPuerto.escribir( "\n---- Envio Temperatura: TERMINA \n" );
-  
+
+
+  // 
+  // Obtengo la humedad y publico
+  // 
   int valorRH = elMedidor.getRH();
 
   elPuerto.escribir( "\n---- Envio Humedad Relativa: empieza \n" );
   elPuerto.escribir( valorRH );
   elPublicador.publicarRH( valorRH, 
-                  cont,
                   intervaloEmision // intervalo de emisión
                   );
   elPuerto.escribir( "\n---- Envio Humedad Relativa: TERMINA \n" );

@@ -1,8 +1,12 @@
 // -*- mode: c++ -*-
 
 // ----------------------------------------------------------
-// Aitor Benítez Estruch
-// 2021/10/05
+// Caracteristica.h
+// @autor: Aitor Benítez Estruch
+// @fecha: 2021/10/05
+// 
+// @Descripcion:
+// 
 // ----------------------------------------------------------
 
 #ifndef CARACTERISTICA_H_INCLUIDO
@@ -10,6 +14,12 @@
 
 
 // ----------------------------------------------------
+//
+// pString: Texto,
+// pUint: Texto,
+// tamMax: N -> stringAUint8AlReves()
+// Texto <-
+//
 // ----------------------------------------------------
 uint8_t * stringAUint8AlReves( const char * pString, uint8_t * pUint, int tamMax ) {
 
@@ -51,6 +61,9 @@ class Caracteristica {
   // .........................................................
 
   // .........................................................
+  /*
+   * nombreCaracteristica:Text -> Constructor() ->
+   */
   // .........................................................
   Caracteristica( const char * nombreCaracteristica_ )
     :
@@ -60,6 +73,11 @@ class Caracteristica {
   } // ()
 
   // .........................................................
+  // nombreCaracteristica:Text,
+  // props:N,
+  // permisoRead:N,
+  // permisoWrite:N,
+  // tamaño:N -> Constructor() ->
   // .........................................................
   Caracteristica( const char * nombreCaracteristica_ ,
           uint8_t props,
@@ -75,6 +93,9 @@ class Caracteristica {
   private:
   // .........................................................
   // CHR_PROPS_WRITE , CHR_PROPS_READ ,  CHR_PROPS_NOTIFY 
+  //
+  // N -> asignarPropiedades()
+  //
   // .........................................................
   void asignarPropiedades ( uint8_t props ) {
     // no puedo escribir AUN si el constructor llama a esto: Serial.println( " laCaracteristica.setProperties( props ); ");
@@ -83,6 +104,9 @@ class Caracteristica {
 
   // .........................................................
   // BleSecurityMode::SECMODE_OPEN  , BleSecurityMode::SECMODE_NO_ACCESS
+  //
+  // N, N -> asignarPermisos()
+  //
   // .........................................................
   void asignarPermisos( SecureMode_t permisoRead, SecureMode_t permisoWrite ) {
     // no puedo escribir AUN si el constructor llama a esto: Serial.println( "laCaracteristica.setPermission( permisoRead, permisoWrite ); " );
@@ -90,6 +114,9 @@ class Caracteristica {
   } // ()
 
   // .........................................................
+  //
+  // N -> asignarTamanyoDatos()
+  //
   // .........................................................
   void asignarTamanyoDatos( uint8_t tam ) {
     // no puedo escribir AUN si el constructor llama a esto: Serial.print( " (*this).laCaracteristica.setFixedLen( tam = " );
@@ -99,7 +126,14 @@ class Caracteristica {
   } // ()
 
   public:
+  
   // .........................................................
+  //
+  // props:N,
+  // permisoRead:N,
+  // permisoWrite:N,
+  // tamaño:N -> asignarPropiedadesPermisosYTamanyoDatos() ->
+  //
   // .........................................................
   void asignarPropiedadesPermisosYTamanyoDatos( uint8_t props,
                          SecureMode_t permisoRead,
@@ -112,6 +146,8 @@ class Caracteristica {
                          
 
   // .........................................................
+  // str:Text -> escribirDatos() <-
+  // r:N <-
   // .........................................................
   uint16_t escribirDatos( const char * str ) {
     // Serial.print( " return (*this).laCaracteristica.write( str  = " );
@@ -125,6 +161,10 @@ class Caracteristica {
   } // ()
 
   // .........................................................
+  //
+  // str:Text -> NotificarDatos() <-
+  // r:N <-
+  // 
   // .........................................................
   uint16_t notificarDatos( const char * str ) {
     
@@ -140,6 +180,9 @@ class Caracteristica {
   } // ()
 
   // .........................................................
+  //
+  //  activar() ->
+  //
   // .........................................................
   void activar() {
     err_t error = (*this).laCaracteristica.begin();

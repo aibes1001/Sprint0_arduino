@@ -1,8 +1,12 @@
 // -*- mode: c++ -*-
 
 // ----------------------------------------------------------
-// Aitor Benítez Estruch
-// 2021/10/05
+// ServicioEnEmisora.h
+// @autor: Aitor Benítez Estruch
+// @fecha: 2021/10/05
+// 
+// @Descripcion:
+// 
 // ----------------------------------------------------------
 #ifndef SERVICIO_EMISORA_H_INCLUIDO
 #define SERVICIO_EMISORA_H_INCLUIDO
@@ -15,6 +19,11 @@
 // ----------------------------------------------------
 // alReves() utilidad
 // pone al revés el contenido de una array en el mismo array
+// 
+// p:Lista<T>,
+// n: N -> alReves()
+// Lista<T> <-
+// 
 // ----------------------------------------------------
 template< typename T >
 T *  alReves( T * p, int n ) {
@@ -61,6 +70,7 @@ private:
 public:
   
   // .........................................................
+  // nombreServicio : Text -> Constructor() ->
   // .........................................................
   ServicioEnEmisora( const char * nombreServicio_ )
 	:
@@ -70,6 +80,7 @@ public:
   } // ()
   
   // .........................................................
+  // escribeUUID() <-
   // .........................................................
   void escribeUUID() {
     	Serial.println ( "**********" );
@@ -80,12 +91,14 @@ public:
   } // ()
 
   // .........................................................
+  // caracteristica:Caracteristica -> anyadirCaracteristica() ->
   // .........................................................
   void anyadirCaracteristica( Caracteristica & car ) {
 	    (*this).lasCaracteristicas.push_back( & car );
   } // ()
 
   // .........................................................
+  // activarServicio() 
   // .........................................................
   void activarServicio( ) {
 	// entiendo que al llegar aquí ya ha sido configurado
@@ -102,6 +115,7 @@ public:
   } // ()
 
   // .........................................................
+  // BLEService <- BLEServicio() <-
   // .........................................................
   operator BLEService& () {
 	    // "conversión de tipo": si pongo esta clase en un sitio donde necesitan un BLEService
